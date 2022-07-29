@@ -52,6 +52,3 @@ const id_list = ["muzi", "frodo", "apeach", "neo"]
 const report = ["muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi"]
 const k = 2
 console.log(solution(id_list, report, k))
-let str = 'a'
-str += str[str.length - 1].repeat(3-1)
-console.log(str)
