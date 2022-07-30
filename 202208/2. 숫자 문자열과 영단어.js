@@ -1,12 +1,9 @@
 const nums = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
 
 const replacer = (match) => {
-  const idx = nums.findIndex((x) => x === match);
-  
-  if (idx >= 0) {
-    return idx;
-  }
+   return nums.findIndex((x) => x === match);
 }
+
 function solution(s) {
   const numStrMatch = nums.reduce((acc, x, i, arr) => {
     if (i < 1) {
