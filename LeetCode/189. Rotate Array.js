@@ -1,12 +1,13 @@
 // https://leetcode.com/problems/rotate-array/description/
+
 /**
  * @param {number[]} nums
  * @param {number} k
  * @return {void} Do not return anything, modify nums in-place instead.
  */
 var rotate = function(nums, k) {
-  const arr = nums.slice()
-  let temp = arr[0]
+  const arr = nums.slice(); // 바꾸기 전의 배열을 계속 참조해야 함
+  let temp = arr[0];
   let i = 0;
   let j = k % nums.length;
     
