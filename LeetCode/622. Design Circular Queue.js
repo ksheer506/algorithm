@@ -44,8 +44,7 @@ MyCircularQueue.prototype.deQueue = function () {
 MyCircularQueue.prototype.Front = function () {
   const front = this.queue[this.front];
 
-  if (front === undefined) return -1;
-  return front;
+  return front === undefined ? -1 : front;
 };
 
 /**
@@ -54,8 +53,7 @@ MyCircularQueue.prototype.Front = function () {
 MyCircularQueue.prototype.Rear = function () {
   const rear = this.queue[(this.rear + this.size) % (this.size + 1)];
 
-  if (rear === undefined) return -1;
-  return rear;
+  return rear === undefined ? -1 : rear;
 };
 
 /**
