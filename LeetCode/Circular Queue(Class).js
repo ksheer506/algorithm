@@ -11,7 +11,7 @@ class CircularQ {
   }
 
   enQueue(el) {
-    // this.rear - this.front의 길이가 this.length + 1이면 꽉 찬 상태()
+    // this.rear - this.front의 길이가 this.length + 1이면 꽉 찬 상태
     // 그 상태에서 또 요소를 삽입하려고 하면 이미 꽉 찬 상태이므로 오버 플로우 에러를 내야 함
     if (this.rear === ((this.front + this.length) % (this.length + 1))) {
       throw new Error("Queue Overflow Error")
@@ -22,7 +22,7 @@ class CircularQ {
   }
   deQueue() {
     // this.rear === this.front이면 빈 상태
-    // 그 상태에서 또 요소를 뺄려고 하면 이미 빈 찬 상태이므로 언더 플로우 에러를 내야 함
+    // 그 상태에서 또 요소를 뺄려고 하면 이미 빈 상태이므로 언더 플로우 에러를 내야 함
     if (this.rear === this.front) {
       throw new Error("Queue Underflow Error")
     }
