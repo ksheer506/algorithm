@@ -1,24 +1,24 @@
 class CircularQ {
-  constructor(size) {
-    this.queue = new Array(size + 1);
-    this.size = size;
+  constructor(n) {
+    this.queue = new Array(n + 1);
+    this.length = n;
     this.front = 0;
     this.rear = 0;
   }
 
-  get length() {
-    return (this.rear - this.front + this.size + 1) % (this.size + 1);
+  get size() {
+    return (this.rear - this.front + this.length + 1) % (this.length + 1);
   }
 
   enQueue(el) {
-    // this.rear - this.front의 길이가 this.size + 1이면 꽉 찬 상태()
+    // this.rear - this.front의 길이가 this.length + 1이면 꽉 찬 상태()
     // 그 상태에서 또 요소를 삽입하려고 하면 이미 꽉 찬 상태이므로 오버 플로우 에러를 내야 함
-    if (this.rear === ((this.front + this.size) % (this.size + 1))) {
+    if (this.rear === ((this.front + this.length) % (this.length + 1))) {
       throw new Error("Queue Overflow Error")
     }
 
     this.queue[this.rear] = el;
-    this.rear = (this.rear + 1) % (this.size + 1);
+    this.rear = (this.rear + 1) % (this.length + 1);
   }
   deQueue() {
     // this.rear === this.front이면 빈 상태
@@ -29,7 +29,7 @@ class CircularQ {
 
     const current = this.queue[this.front];
     this.queue[this.front] = undefined;
-    this.front = (this.front + 1) % (this.size + 1);
+    this.front = (this.front + 1) % (this.length + 1);
 
     return current;
   }
@@ -49,4 +49,4 @@ queue.deQueue();
 queue.deQueue();
 
 console.log(queue);
-console.log(queue.length);
+console.log(queue.size);
