@@ -5,6 +5,10 @@
 // 2 7 8 9
 // 3   0
 // r [r, c]
+
+const calcDistance = ([s, e], [ts, te]) => {
+  return Math.abs(s - ts) + Math.abs(e - te);
+}
 function solution(numbers, hand) {
   let answer = '';
   let left = [3, 0]; // 왼손 초기 위치
@@ -12,34 +16,30 @@ function solution(numbers, hand) {
 
   for (let i = 0; i < numbers.length; i++) {
     const key = numbers[i] || 11;
-    const c = ((key % 3) + 2) % 3; 
+    const c = ((key % 3) + 2) % 3; // 첫번째 열을 0으로 변환
     const r = Math.floor((key - 1) / 3);
     const target = [r, c]
 
     if (c === 2) {
       answer += 'R'
       right = [r, 2];
-    } else if (c === 0) {
+      continue;
+    } 
+    if (c === 0) {
       answer += 'L'
       left = [r, 0];
-    } else {
-      const s1 = Math.abs(left[0]-target[0]) + Math.abs(left[1]-target[1])
-      const s2 = Math.abs(right[0]-target[0]) + Math.abs(right[1]-target[1])
+      continue;
+    }
+    const s1 = calcDistance(left, target);
+    const s2 = calcDistance(right, target);
       
-      if (s1 > s2) {
-        answer += 'R'
-        right = target;
-      } else if (s1 < s2) {
-        answer += 'L'
-        left = target;
-      } else {
-        answer += hand === 'left' ? 'L' : 'R'
-        if (hand === 'left') {
-          left = target;
-        } else {
-          right = target;
-        }
-      }
+    if (s1 > s2 || (s1 === s2 && hand === 'right')) {
+      answer += 'R'
+      right = target;
+    }
+    if (s1 < s2 || (s1 === s2 && hand === 'left')) {
+      answer += 'L'
+      left = target;
     }
   }
   return answer;
