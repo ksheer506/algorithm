@@ -70,16 +70,7 @@ MyCircularQueue.prototype.isFull = function () {
   return this.rear === ((this.front + this.size) % (this.size + 1));
 };
 
-/** 
- * Your MyCircularQueue object will be instantiated and called as such:
- * var obj = new MyCircularQueue(k)
- * var param_1 = obj.enQueue(value)
- * var param_2 = obj.deQueue()
- * var param_3 = obj.Front()
- * var param_4 = obj.Rear()
- * var param_5 = obj.isEmpty()
- * var param_6 = obj.isFull()
- */
+
 const myCircularQueue = new MyCircularQueue(8);
 myCircularQueue.enQueue(3); // return True
 myCircularQueue.enQueue(9); // return True
@@ -92,11 +83,5 @@ console.log(myCircularQueue.isEmpty());
 console.log(myCircularQueue.isEmpty());
 console.log(myCircularQueue.Rear());
 console.log(myCircularQueue.Rear());
-/* console.log(myCircularQueue.deQueue()); */
-
-
-/* console.log(myCircularQueue.isFull());
-myCircularQueue.enQueue(4)
-console.log(myCircularQueue.Rear()); */
 
 console.log(myCircularQueue);
