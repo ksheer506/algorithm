@@ -28,7 +28,7 @@ jobs:
           const readMePath = "../../README.md"
 
           const changed = "${{ steps.changed-files.outputs.all_changed_files }}"
-          const fileName = path.match(/[가-힣\s\w\d\.\(\)]{1,}(?=\.js)/g)
+          const fileName = changed.match(/[가-힣\s\w\d\.\(\)]{1,}(?=\.js)/g)
           const date = new Date(Date.now()).toISOString().slice(0, 10)
           const appendStr = `*${date}*　**${fileName}**`
   
