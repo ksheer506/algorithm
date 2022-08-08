@@ -31,6 +31,8 @@ jobs:
           const fileName = changed.match(/[가-힣\s\w\d\.\(\)]{1,}(?=\.js)/g)
           const date = new Date(Date.now()).toISOString().slice(0, 10)
           const appendStr = `*${date}*　**${fileName}**`
+
+          console.log(fileName, appendStr)
   
           await writeFile(readMePath, `${appendStr}\n`, { flag: 'a+' })
     - name: Commit changes
@@ -38,6 +40,6 @@ jobs:
         git config --global user.name 'ksheer506'
         git config --global user.email 'ksheer506@naver.com'
         git add -A
-        git commit -am "auto-update README.md"
+        git commit -m "auto-update README.md"
     - name: Push changes
       run: git push
