@@ -1,0 +1,19 @@
+name: Update README.md
+
+on:
+  push:
+    branches: 
+      - main
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 2
+    - name: Get changed files
+      id: changed-files
+      uses: tj-actions/changed-files@v24.1
+    - run: echo ${{steps.changed-files.outpus.added_files}}
