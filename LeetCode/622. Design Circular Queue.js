@@ -80,7 +80,6 @@ myCircularQueue.deQueue()
 myCircularQueue.deQueue()
 
 console.log(myCircularQueue.isEmpty());
-console.log(myCircularQueue.isEmpty());
 console.log(myCircularQueue.Rear());
 console.log(myCircularQueue.Rear());
 
