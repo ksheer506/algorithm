@@ -27,4 +27,4 @@ function solution(n) {
 }
 
 const n = 30549194;
-console.log(solution(n))
+console.log(solution(n)) 
