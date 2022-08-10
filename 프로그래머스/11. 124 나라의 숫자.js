@@ -1,39 +1,34 @@
-function solution(n) {
-  const ternary = n.toString(3).split('');
-  const lastN = Number(ternary.slice(-1));
-  let lastI = ternary.length - 1;
+function convert124(str) {
+  let conv = str.split('');
   
-  if (lastN >= 1) {
-    for (let j = lastI - 1; j >= 0; j--) {
-      if (ternary[j] === '0') {
-        lastI = j;
-        break;
-      }
-      if (j < 1) {
-        lastI = 0;
-      }
-    }
+  // 바로 앞자리 수에서 1을 빼서 자신한테 3을 더함(뺄셈할 때 앞자리 수 넘겨받듯이)
+  for (let i = 1; i < conv.length; i++) {
+    if (Number(conv[i]) >= 2) continue;
+    conv[i - 1] = Number(conv[i - 1]) - 1;
+    conv[i] = Number(conv[i]) + 3;
   }
   
-  for (let i = 1; i <= lastI; i++) {
-    if (Number(ternary[i]) >= 2) continue;
-    ternary[i-1] = Number(ternary[i-1]) - 1;
-    ternary[i] = Number(ternary[i]) + 3;
-  }
-  
-  return ternary.reduce((a, c, i) => {
+  return conv.reduce((a, c, i) => {
     // 맨 첫자리가 0이면 삭제
     if (i < 1 && c < 1) return a;
-    if(c === 3) return `${a}4`;
+    // 3이면 세번째 숫자인 4로 변환
+    if (c === 3) return `${a}4`;
     return `${a}${c}`;
   }, '');
 }
 
-const n = 22
-const arr = new Array(20).fill(0).map((x, i) => `${i-5+n} ${solution(i-5+n)}`)
-console.log(arr)
-// console.log(solution(n))
-console.log(Number(n).toString(3))
+function solution(n) {
+  /* 
+  1. '20'이거나 2와 0 사이에 2가 없어야 함
+  2. 1로 시작하면서 0으로 끝나고 그 사이에 2가 없어야 함
+  */
+  return n.toString(3).replace(/2[01]{1,}0|20|1[01]{0,}0/g, (m) => convert124(m));
+}
+
+
+const n = 52
+console.log(solution(n))
+
 /* 
 3진법으로 변환 후 맨 앞자리부터 1을 빼서 
 뒷자리로 3을 넘김
@@ -43,57 +38,28 @@ console.log(Number(n).toString(3))
 */
 
 /* 
-1. 첫째자리는 숫자를 더이상 넘길 수 없기 때문에 4 이상이 되면 안 됨 
+1. 첫째자리는 숫자를 더이상 넘길 수 없기 때문에 넘겼을 때 4 이상이 되면 안 됨(ex. xx...1(3)인 숫자)
 2. 둘째자리 이상은 숫자를 넘길 수 있기 때문에 5이상만 아니면 됨
-3. xx...1(3)인 숫자는 위 알고리즘으로 하면 안 됨(ex. 4, 13, 22, ...)
-4. 작업을 반복했을 때, 첫째자리 수가 4이상이 되면 전부 초기화해야 함
+3. 작업을 반복했을 때, 첫째자리 수가 4이상이 되면 전부 초기화해야 함
 5. 3진법으로 첫째자리가 1이고,  211...101...1(3)인 숫자
 */
 
 /* 
-첫째자리부터 배열을 거꾸로 순회
-1. 첫째 자리가 1 이상이면 
-(a) 처음으로 0이 나오는 위치 p를 찾음
-(b) 1~p까지 알고리즘 실행
-2. 아니라면 알고리즘 그대로 실행
+A. 2부터 0까지만 유효하게 바꿀 수 있음
+
+B. 1부터 0은 마지막 글자가 1만 아니면 전부 변환 가능
+- 251 = '10010'1(3) = 22441
 */
 
-/* 
-'12'가 붙어있는 경우
-*/
-
-// 8 = 22 = 22(3)
-// 9 = 24 = '100'(3)
-// 10 = 41 = '10'1(3) 3*3 + 1 
-// 13 = 111 = 111(3)
-/*
-14 = 112 = 112(3) 3^2 + 3 + 2
-15 = 114 = 120(3)
-16 = 121 
-17 122 18 124 19 141 20 142 21 144 22 211 23 212 
-24 214 25 221 26 222 27 224
-
-= a*3^n + b*3^(n-1) + ... x*3^2 + y*3 + z
-a, b, ..., z는 0~2이기 때문에 앞 자리에서 1을 넘겨받아도 3을 넘지는 않음
-27 = 1000 -> 0300 -> 0230 ->  0223
-
-20 = '20'2 -> 142
-26 = 222
-4 = 11
-22 = 211
-64 = '210'1 -> 1401 -> 1441
-67 = 2111 
-42 = 11'20' -> 1114
-69 = 21'20' -> 2114
-*/
-
-// 582 = '210'1'20' -> 142414
-// 140120 133113 -> 144114
-
-/* 
-2부터 0까지만 유효하게 바꿀 수 있음
-1부터 0도 가능
-투 포인터 i, j
-t[i] < t[j]이면 포인터를 j로
-t[j] === 0 && t[j+1] > 0이면 멈추고 변환 시작 
-*/
+/* 프로그래머스 모범 답안 */
+function change124(n) { 
+  let answer = ""; 
+  const array1_2_4 = new Array(4, 1, 2); // 3%3 = 0, 1%3 = 1, 2%3 = 2 
+  
+  while(n) { 
+    answer = array1_2_4[n % 3] + answer; 
+    n = Math.floor((n - 1) / 3); 
+  } 
+  
+  return answer; 
+}
