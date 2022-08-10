@@ -1,45 +1,45 @@
-name: Update README.md
+# name: Update README.md
 
-on:
-  push:
-    branches: 
-      - main
+# on:
+#   push:
+#     branches: 
+#       - main
 
-jobs:
-  update:
-    runs-on: ubuntu-latest
+# jobs:
+#   update:
+#     runs-on: ubuntu-latest
     
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 2
-    - uses: actions/setup-node@v2
-      with:
-        node-version: 16
-    - name: Get changed files
-      id: changed-files
-      uses: tj-actions/changed-files@v24.1
+#     steps:
+#     - uses: actions/checkout@v3
+#       with:
+#         fetch-depth: 2
+#     - uses: actions/setup-node@v2
+#       with:
+#         node-version: 16
+#     - name: Get changed files
+#       id: changed-files
+#       uses: tj-actions/changed-files@v24.1
       
-    - name: GitHub Script
-      uses: actions/github-script@v6.1.0
-      with:
-        script: |
-          const { writeFile } = require('fs/promises')
-          const readMePath = "../../README.md"
+#     - name: GitHub Script
+#       uses: actions/github-script@v6.1.0
+#       with:
+#         script: |
+#           const { writeFile } = require('fs/promises')
+#           const readMePath = "../../README.md"
 
-          const changed = '${{ steps.changed-files.outputs.modified_files }}'
-          const fileName = changed.match(/[가-힣\s\w\d\.\(\)]{1,}(?=\.js)/g)
-          const date = new Date(Date.now()).toISOString().slice(0, 10)
-          const appendStr = `*${date}*　**${fileName}**`
+#           const changed = '${{ steps.changed-files.outputs.modified_files }}'
+#           const fileName = changed.match(/[가-힣\s\w\d\.\(\)]{1,}(?=\.js)/g)
+#           const date = new Date(Date.now()).toISOString().slice(0, 10)
+#           const appendStr = `*${date}*　**${fileName}**`
 
-          console.log(fileName, appendStr)
+#           console.log(fileName, appendStr)
   
-          await writeFile(readMePath, `${appendStr}\n`, { flag: 'a+' })
-    - name: Commit changes
-      run: |
-        git config --global user.name 'ksheer506'
-        git config --global user.email 'ksheer506@naver.com'
-        git add -A
-        git commit -m "auto-update README.md"
-    - name: Push changes
-      run: git push
+#           await writeFile(readMePath, `${appendStr}\n`, { flag: 'a+' })
+#     - name: Commit changes
+#       run: |
+#         git config --global user.name 'ksheer506'
+#         git config --global user.email 'ksheer506@naver.com'
+#         git add -A
+#         git commit -m "auto-update README.md"
+#     - name: Push changes
+#       run: git push
