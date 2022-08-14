@@ -7,7 +7,7 @@ function solutionN2(priorities, location) {
   
   for (let i = 0; i < L ** 2; i++) {
     if (queue[i] === undefined) break;
-    let isUrgent = !queue.some((x) => x > queue[i]);
+    let isUrgent = !queue.some((x) => x > queue[i]); // 반복문 안에 O(N) 메서드 → 비효율
  
     
     if (i === targetI && isUrgent) {
