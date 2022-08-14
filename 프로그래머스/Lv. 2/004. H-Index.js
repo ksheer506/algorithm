@@ -27,13 +27,20 @@ console.log(solution(cit))
 */
 
 /* 모범 답안 */
-function solution(citations) { 
-  const sorted = citations.sort((a, b) => a - b); 
+function solution2(citations) { 
+  const sorted = citations.sort((a, b) => b - a); // 내림차순으로 정렬
   let i = 0; 
   
+  /* 
+  H = sorted[i] 이상인 논문의 개수 N = i.
+  i가 증가할 때, H는 감소하지만 N은 증가하므로 최초로 i ≥ sorted[i]가 될 때가(즉, N ≥ H) H의 최댓값.
+  */
   while(i < sorted[i]){ 
     i++; 
   } 
   
   return i; 
 }
+
+const arr = [0,0,3,3,4,5]
+console.log(solution2(arr))
