@@ -41,3 +41,4 @@ const transpose = matrix => matrix.reduce( (a, c) => c.map((_, i) => [...(a[i] |
 
 console.log(solution(board, moves))
 console.log(transpose(board))
+
