@@ -20,6 +20,8 @@ function solution(maps) {
 
   return maps[R][C] > 1 ? maps[R][C] : -1;
 }
+// 효율성1: call stack overflow
+// 효율성3~4: 시간 초과
 
 function solutionW(maps) {
   const R = maps.length - 1;
@@ -49,6 +51,7 @@ function solutionW(maps) {
 
   return maps[R][C] > 1 ? maps[R][C] : -1;
 }
+// 효율성1, 3~4: 시간 초과
 
 /* 
 최상단 → 최하단이므로 최단 경로는
