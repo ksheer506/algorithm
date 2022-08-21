@@ -37,10 +37,12 @@ function solutionW(maps) {
     if (maps[a][b] > 1 && maps[a][b] <= step) continue;
 
     maps[a][b] = step;
+    
+    const next = [];
 
     dir.forEach(([x, y]) => {
       if (onMaps(a + x, b + y) && maps[a + x][b + y]) {
-        stack.push([a + x, b + y, step + 1]);
+        next.push([a + x, b + y, step + 1]);
       }
     })
   }
@@ -48,6 +50,12 @@ function solutionW(maps) {
   return maps[R][C] > 1 ? maps[R][C] : -1;
 }
 
+/* 
+최상단 → 최하단이므로 최단 경로는
+1. 위, 아래가 모두 가능하면 아래만
+2. 왼쪽, 오른쪽 모두 가능하면 오른쪽만
+3. 위, 오른쪽 모두 가능하면 오른쪽만
+*/
 
 const maps = [
   [1, 0, 1, 1, 1],
