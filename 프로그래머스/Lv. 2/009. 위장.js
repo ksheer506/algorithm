@@ -2,12 +2,12 @@ function solution(clothes) {
   const closet = new Map();
   const powerSet = [];
   let answer = 0;
-  
+
   for (let i = 0; i < clothes.length; i++) {
     const prev = closet.get(clothes[i][1]) || 0;
     closet.set(clothes[i][1], prev + 1);
   }
-  
+
   const keys = [...closet.keys()];
   const power = (depth, arr) => {
     if (depth >= keys.length) {
@@ -20,13 +20,13 @@ function solution(clothes) {
   };
   
   power(0, []);
-  
+
   for (let j = 0; j < powerSet.length; j++) {
     if (!powerSet[j].length) continue;
-    
+
     answer += powerSet[j].reduce((a, c) => a * closet.get(c), 1);
   }
-  
+
   return answer;
 };
 
@@ -38,4 +38,24 @@ console.log(solution(clothes));
 - 포함하면 배열 arr에 원소 넣고 다음 재귀에 넘김
 - 포함 안하면 arr 그대로 다음 재귀에 넘김
 2. N = keys.length이면 이어온 arr을 결과 배열에 넣음
+*/
+
+// non-recursive solution 
+/* 
+const power = array => {
+  const result = [[]];
+
+  for (const value of array) {
+    const length = result.length
+
+    for (let i = 0; i < length; i++) {
+      let temp = result[i].slice(0)
+
+      temp.push(value)
+      result.push(temp)
+    }
+  }
+
+  return result;
+}
 */
