@@ -1,34 +1,36 @@
 function solution(s) {
   const letterMap = new Map();
-  let first = '';
+  let head = '';
   let answer = 0;
    
   const reset = () => {
-    answer += 1;
+    head = '';
     letterMap.clear();
   }
   
   for (let i = 0; i < s.length; i++) {
     if (!letterMap.size) {
-      first = s[i];
-      letterMap.set(first, 0);
+      head = s[i];
+      letterMap.set(head, 0);
     }
     
-    const firstPrev = letterMap.get(first);
-    const restPrev = letterMap.get('REST') || 0;
+    const headPrev = letterMap.get(first);
     
-    if (s[i] === first) {
-      letterMap.set(first, firstPrev + 1);
-      
-      if (i === s.length - 1) {
-        reset();
-      }
+    if (s[i] === head) {
+      letterMap.set(head, headPrev + 1);
     } else {
+      const restPrev = letterMap.get('REST') || 0;
+      
       letterMap.set('REST', restPrev + 1);
       
-      if (restPrev + 1 === firstPrev || i === s.length - 1) {
+      if (restPrev + 1 === headPrev) {
+        answer += 1;
         reset();
       }
+    }
+    if (i === s.length - 1) {
+      answer += 1;
+      reset();
     }
   }
   
