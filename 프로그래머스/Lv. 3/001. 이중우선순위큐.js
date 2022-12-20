@@ -132,7 +132,7 @@ const updateHeap = (heap) => {
     const lastI = heap.length - 1;
     const removed = removeItemIfNotExist(heap, lastI);
     
-    if (!removed) break;
+    if (!removed || heap.length < 1) break;
   }
 }
 
