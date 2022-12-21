@@ -9,27 +9,20 @@ const swap = (heap, idx1, idx2) => {
   [heap[idx1], heap[idx2]] = [heap[idx2], heap[idx1]];
 }
 
-const removeItemIfNotExist = (heap, idx) => {
-  const e = heap[idx];
-  const remains = countsMap.get(e);
+/**
+ * @param {Array<any>} heap 최대 힙 또는 최소 힙
+ * @param {Map<any, number>} nodeMap 각 노드가 힙에 몇 개 존재하는지 나타내는 Map
+ */
+const removeNullifiedTail = (heap, nodeMap) => {
+  while (true) {
+    const lastI = heap.length - 1;
+    const e = heap[lastI];
+    const remains = nodeMap.get(e); // 힙에 존재하는 해당 노드의 개수
 
-  if (remains >= 1) return false;
+    if (remains >= 1 || heap.length < 1) break;
 
-  heap.pop(); // 존재하지 않는 마지막 요소 제거
-  return true;
-}
-
-const getValidLastIndex = (heap) => {
-  let lastIdx = heap.length - 1;
-
-  while (lastIdx > 0) {
-    const removed = removeItemIfNotExist(heap, lastIdx);
-
-    if (!removed) break;
-    lastIdx--;
+    heap.pop(); // 존재하지 않으면 제거
   }
-
-  return lastIdx;
 }
 
 const insertHeap = (heap, item, callback) => {
@@ -39,7 +32,7 @@ const insertHeap = (heap, item, callback) => {
 
   // 3. 부모 노드, 새 노드의 값을 비교하면서 위치를 바꾸는 작업 반복
   while (pIdx < cIdx && pIdx >= 0) {
-    if (callback(heap[cIdx],heap[pIdx])) break;
+    if (callback(heap[cIdx], heap[pIdx])) break;
 
     // 4. 부모 노드의 값이 작을 때 부모 노드와 새 노드의 위치를 바꿈
     swap(heap, cIdx, pIdx);
@@ -88,8 +81,25 @@ const reArrange_minHeap = (heap) => {
   }
 }
 
+const extractRoot = (heap, type) => {
+  const lastI = heap.length - 1;
+  swap(heap, 0, lastI); // 1. 루트 노드와 마지막 노드를 교체
+  const root = heap.pop(); // 2. 교체 전의 루트 노드를 추출
+
+
+  if (type === "max") {
+    reArrange_maxHeap(heap) // 3. 최대 힙을 유지하도록 힙을 재정렬
+  }
+
+  if (type === "min") {
+    reArrange_minHeap(heap) // 3. 최대 힙을 유지하도록 힙을 재정렬 
+  }
+
+  return root;
+}
+
 const extractMax = (heap) => {
-  const lastI = getValidLastIndex(heap);
+  const lastI = heap.length - 1;
   swap(heap, 0, lastI); // 1. 루트 노드와 마지막 노드를 교체
   const max = heap.pop(); // 2. 교체 전 루트 노드를 추출(최댓값) 
 
@@ -99,24 +109,13 @@ const extractMax = (heap) => {
 }
 
 const extractMin = (heap) => {
-  const lastI = getValidLastIndex(heap);
+  const lastI = heap.length - 1;
   swap(heap, 0, lastI); // 1. 루트 노드와 마지막 노드를 교체
   const min = heap.pop(); // 2. 교체 전 루트 노드를 추출(최솟값) 
 
   reArrange_minHeap(heap) // 3. 최대 힙을 유지하도록 힙을 재정렬 
 
   return min;
-}
-
-const updateHeap = (heap) => {
-  let prevL = heap.length;
-  
-  while (true) {
-    const lastI = heap.length - 1;
-    const removed = removeItemIfNotExist(heap, lastI);
-    
-    if (!removed || heap.length < 1) break;
-  }
 }
 
 function solution(operations) {
@@ -129,38 +128,47 @@ function solution(operations) {
     const [op, strEl] = operations[i].split(' ');
     const e = Number(strEl);
 
+    // 삽입하기 전에 maxHeap, minHeap 동기화
     if (pendingSync) {
-      updateHeap(maxHeap);
-      updateHeap(minHeap);
-      console.log('최신화', minHeap, maxHeap);
+      removeNullifiedTail(maxHeap, countsMap);
+      removeNullifiedTail(minHeap, countsMap);
+      console.log('최신화');
+      console.log(minHeap);
+      console.log(maxHeap);
     }
     if (op === 'I') {
       const maxCallback = (a, b) => a <= b
       const minCallback = (a, b) => a >= b
-      
+
       insertHeap(maxHeap, e, maxCallback);
       insertHeap(minHeap, e, minCallback);
-      
+
       countsMap.set(e, (countsMap.get(e) || 0) + 1);
-      console.log('삽입', minHeap, maxHeap);
+      console.log('삽입');
+      console.log(minHeap);
+      console.log(maxHeap);
       pendingSync = false;
       continue;
     }
-    
+
     // 최댓값 제거
     if (op === 'D' && e > 0) {
       const max = maxHeap[0];
       countsMap.set(max, countsMap.get(max) - 1);
-      extractMax(maxHeap);
+      extractRoot(maxHeap, "max")
+      //extractMax(maxHeap);
     }
     // 최솟값 제거
     if (op === 'D' && e < 0) {
       const min = minHeap[0];
       countsMap.set(min, countsMap.get(min) - 1);
-      extractMin(minHeap);
+      extractRoot(minHeap, "min")
+      /* extractMin(minHeap); */
     }
     pendingSync = true;
-    console.log('제거', minHeap, maxHeap);
+    console.log('제거');
+    console.log(minHeap);
+    console.log(maxHeap);
   }
 
   if (minHeap.length < 1) return 'EMPTY';
