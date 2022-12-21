@@ -101,8 +101,14 @@ const extractRoot = (heap, type) => {
   return root;
 }
 
-function solution(operations) {
+const processSTDIN = (data) => {
+  return data.split(/\n/g);
+}
+
+const solution = (operations) => {
   // maxHeap, minHeap이 동일하지 않을 때, 두 Heap을 동기화를 하도록 플래그 설정
+  const data = processSTDIN(operations);
+
   let pendingSync = false;
   const countsMap = new Map();
   const maxHeap = [];
@@ -111,8 +117,8 @@ function solution(operations) {
   const maxCallback = (a, b) => a <= b
   const minCallback = (a, b) => a >= b
 
-  for (let i = 0; i < operations.length; i++) {
-    const [op, strEl] = operations[i].split(' ');
+  for (let i = 0; i < data.length; i++) {
+    const [op, strEl] = data[i].split(' ');
     const e = Number(strEl);
 
     // 삽입하기 전에 maxHeap, minHeap 동기화
