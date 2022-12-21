@@ -1,5 +1,3 @@
-const countsMap = new Map();
-
 const getParentIdx = (idx) => {
   // idx = 0이면 루트 노드이므로 0을 반환해야 함
   return Math.floor(((idx || 1) - 1) / 2);
@@ -25,6 +23,12 @@ const removeNullifiedTail = (heap, nodeMap) => {
   }
 }
 
+/**
+ * @param {Array<any>} heap 최대 힙 또는 최소 힙
+ * @param {any} item 삽입할 노드
+ * @param {(a: any, b: any) => boolean} callback 힙 노드 정렬 콜백함수(최대 힙: (a, b) => a <= b, 최소 힙: (a, b) => a >= b)
+ * @returns 
+ */
 const insertHeap = (heap, item, callback) => {
   heap.push(item); // 1. 힙의 마지막 위치에 노드 삽입
   let cIdx = heap.length - 1;
@@ -90,7 +94,6 @@ const extractRoot = (heap, type) => {
   if (type === "max") {
     reArrange_maxHeap(heap) // 3. 최대 힙을 유지하도록 힙을 재정렬
   }
-
   if (type === "min") {
     reArrange_minHeap(heap) // 3. 최대 힙을 유지하도록 힙을 재정렬 
   }
@@ -98,31 +101,15 @@ const extractRoot = (heap, type) => {
   return root;
 }
 
-const extractMax = (heap) => {
-  const lastI = heap.length - 1;
-  swap(heap, 0, lastI); // 1. 루트 노드와 마지막 노드를 교체
-  const max = heap.pop(); // 2. 교체 전 루트 노드를 추출(최댓값) 
-
-  reArrange_maxHeap(heap) // 3. 최대 힙을 유지하도록 힙을 재정렬 
-
-  return max;
-}
-
-const extractMin = (heap) => {
-  const lastI = heap.length - 1;
-  swap(heap, 0, lastI); // 1. 루트 노드와 마지막 노드를 교체
-  const min = heap.pop(); // 2. 교체 전 루트 노드를 추출(최솟값) 
-
-  reArrange_minHeap(heap) // 3. 최대 힙을 유지하도록 힙을 재정렬 
-
-  return min;
-}
-
 function solution(operations) {
   // maxHeap, minHeap이 동일하지 않을 때, 두 Heap을 동기화를 하도록 플래그 설정
   let pendingSync = false;
+  const countsMap = new Map();
   const maxHeap = [];
   const minHeap = [];
+
+  const maxCallback = (a, b) => a <= b
+  const minCallback = (a, b) => a >= b
 
   for (let i = 0; i < operations.length; i++) {
     const [op, strEl] = operations[i].split(' ');
@@ -132,21 +119,12 @@ function solution(operations) {
     if (pendingSync) {
       removeNullifiedTail(maxHeap, countsMap);
       removeNullifiedTail(minHeap, countsMap);
-      console.log('최신화');
-      console.log(minHeap);
-      console.log(maxHeap);
     }
     if (op === 'I') {
-      const maxCallback = (a, b) => a <= b
-      const minCallback = (a, b) => a >= b
-
       insertHeap(maxHeap, e, maxCallback);
       insertHeap(minHeap, e, minCallback);
 
       countsMap.set(e, (countsMap.get(e) || 0) + 1);
-      console.log('삽입');
-      console.log(minHeap);
-      console.log(maxHeap);
       pendingSync = false;
       continue;
     }
@@ -154,21 +132,18 @@ function solution(operations) {
     // 최댓값 제거
     if (op === 'D' && e > 0) {
       const max = maxHeap[0];
+
       countsMap.set(max, countsMap.get(max) - 1);
-      extractRoot(maxHeap, "max")
-      //extractMax(maxHeap);
+      extractRoot(maxHeap, "max");
     }
     // 최솟값 제거
     if (op === 'D' && e < 0) {
       const min = minHeap[0];
+
       countsMap.set(min, countsMap.get(min) - 1);
-      extractRoot(minHeap, "min")
-      /* extractMin(minHeap); */
+      extractRoot(minHeap, "min");
     }
     pendingSync = true;
-    console.log('제거');
-    console.log(minHeap);
-    console.log(maxHeap);
   }
 
   if (minHeap.length < 1) return 'EMPTY';
