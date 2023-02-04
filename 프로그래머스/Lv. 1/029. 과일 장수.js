@@ -1,7 +1,27 @@
+const countingSort = (arr) => {
+  const counts = Array.from({ length: 10 }, (e) => 0)
+  const sorted = []
+
+  arr.forEach((e) => {
+    counts[e] += 1
+  })
+
+  for (let i = 0; i < counts.length; i++) {
+    const appearance = counts[i]
+
+    if (appearance > 0) {
+      sorted.push(...Array(appearance).fill(i))
+    }
+  }
+
+  return sorted
+}
+
 function solution(k, m, score) {
   const L = score.length;
+  const sorted = countingSort(score)
 
-  return score.sort().reduceRight((a, c, i) => {
+  return sorted.reduceRight((a, c, i) => {
     if (((L - 1) - i) % m === m - 1) {
       return a + c * m
     }
