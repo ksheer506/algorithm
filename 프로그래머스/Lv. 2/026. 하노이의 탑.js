@@ -1,26 +1,30 @@
+const COLUMNS = [1, 2, 3]
+
 function solution(n) {
-  const memo = [
-    [], 
-    [[1, 3]],
-    [[1,2], [1,3], [2,3]]
-  ]
-  
-  const getStack = (n) => {
-    if (n <= 2) {
-      return memo[n]
+  const moveDisks = (m, from, to) => {
+    // from, to 기둥이 아닌 기둥
+    const midColumn = COLUMNS.filter((e) => e !== from && e !== to)[0]
+    
+    if (m <= 1) {
+      return [[from, to]]
     }
-    if (n > 2) {
-      memo[n] = [
-        ...getStack(n - 2), 
-        [1,2], [3,2],
-        [1,3], [2,3]
-      ]
-    }
-    return memo[n]
+    return [
+      ...moveDisks(m - 1, from, midColumn),
+      [from, to],
+      ...moveDisks(m - 1, midColumn, to),
+    ]
   }
   
-  return getStack(n)
+  return moveDisks(n, 1, 3)
 }
+/*
+m(3,1,3) = [m(2,1,2), [3,1] m(2,2,3)]
+= [
+  m(1,1,3) [1,2] m(1,3,2)
+  [3,1]
+  m(1,2,1) [2,3] m(1,1,3)
+]
+*/
 
 /**
  * n=1 : [1,3]
@@ -63,14 +67,22 @@ function solution(n) {
  * (6) [2,3] 2기둥에 있는 k-1판을 3기둥에 놓기
  * (7) a(k-2): n=k-2를 3기둥에 완성
  * 
+ * n=k를 1 -> 3기둥에 완성
+ *  = n=k-1을 1 -> 2기둥에 완성 (A)
+ *   + k판을 3기둥에 놓기
+ *   + n=k-1을 2 -> 3기둥에 완성
+ * 
+ * (A) n=k-2를 1 -> 3기둥에 완성
+ *   + k-1판을 2기둥에 놓기
+ *   + n=k-2를 3 -> 2기둥에 완성
+ * 
+ * n=k를 a -> c기둥에 완성
+ *  = n=k-1을 a -> b기둥에 완성
+ *   + k판을 a -> c기둥에 놓기
+ *   + n=k-1을 b -> c기둥에 완성
+ * 
  * a(k) = 4a(k-2) + 3
- * a(k+1) = 4a(k-1) + 3
- * 
- * a(k+1) - a(k) = 4(a(k-1) - a(k-2))
- * b(k) = 2(2b(k-2))
- * a(k+1) - a(k) = 2^k-1 + 2
- * 
  * a(1) = 1, a(2) = 3, a(3) = 7
  */
 
-console.log(solution(2));
+console.log(...solution(4));
