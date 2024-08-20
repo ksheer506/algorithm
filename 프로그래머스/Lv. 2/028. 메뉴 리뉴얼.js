@@ -4,14 +4,31 @@ function solution(orders, course) {
 }
 
 const createPowerSet = (elements) => {
-  const stack = []
+  const stacks = [[[]], []]
+  let index = 0
+  let stackIndex = 0
+  
+  for (let i = 0; i < elements.length; i++) {
+    const nextIndex = (stackIndex + 1) % 2
+    const stack0 = stacks[stackIndex]
+    const stack1 = stacks[nextIndex]
+    
+    while (stack0.length > 0) {
+      const current = stack0.pop()
+      const e = elements[i]
+    
+      stack1.push(current, [...current, e])
+    }
+    stackIndex = nextIndex
+  }
+  return stacks.flatMap((e) => e)
 }
 
 const orders = ["ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"]
 const course = [2,3,4]
 
 console.log(solution(orders, course))
-
+console.log(createPowerSet(['A', 'B', 'C', 'D']))
 /*
 1. orders를 모두 모아서 한 번 이상 출현한 문자를 모음
 2. 각 문자를 원소로 가지는 멱집합 구함
@@ -23,11 +40,21 @@ console.log(solution(orders, course))
 2. 원소들을 하나씩 stack에 push
 
 
-[A, B, C]
+[A, B]
 
 0
+|            \
+A포함         A제외
+|    \       |   \
+B포함 B제외  B포함 B제외  
+AB    A     B    O
 
-A  
-B  
-C
+stack0 = [[]], stack1 = []
+1. 대기중인 원소를 가지는 스택과 처리한 결과를 가지는 스택 두 개를 이용.
+2. 공집합을 꺼내서 대해 0번째 원소 A가 없는 것과 포함된 것을 push해 각각을 스택에 넣음. 
+stack0 = [], stack1 = [[], [A]]
+
+3. 스택의 각 원소를 pop해서 각각에 대해 1번째 원소 B가 없는 것과 포함된 것을 push해 각각을 스택에 넣음. 
+3-1. [A] → stack0 = [[A], [A, B]]
+3-2. [] → stack0 = [[A], [A, B], [], [B]]
 */
