@@ -1,7 +1,34 @@
 function solution(orders, course) {
-  const dishes = [...new Set(orders.join(''))]
+  const orderedDishes = [...new Set(orders.join(''))].sort()
+  // 코스의 길이 N → 길이가 N인 코스 중에서 orders에 가장 많이 포함된 코스의 주문 횟수 max 값 M
+  const courseHitMax = new Map(course.map((c) => [c, 0]))
+  // 코스의 길이 N → 길이가 N이고 주문 횟수가 M인 코스들의 배열(M이 달라지면 그 value는 초기화되어야 함)
+  const hitCourses = new Map([...courseHitMax].map(([c]) => [c, []]))
+  const availableCourses = createPowerSet(orderedDishes).filter((d) => courseHitMax.has(d.length))
   
+  for (const course of availableCourses) {
+    const setMenu = course.join('')
+    const L = setMenu.length
+    const hitCount = orders.reduce((a, o) => isCourseIncluded(setMenu, o) ? a + 1 : a, 0)
+    
+    if (hitCount < 2) {
+      continue
+    }
+    const prevMax = courseHitMax.get(L)
+    const prevCandidates = hitCourses.get(L)
+    
+    if (prevMax < hitCount) {
+      courseHitMax.set(L, hitCount)
+      hitCourses.set(L, [setMenu])
+    } else if (prevMax === hitCount) {
+      hitCourses.set(L, [...prevCandidates, setMenu])
+    }
+  }
+
+  return [...hitCourses.values()].flatMap((e) => e).sort()
 }
+
+const isCourseIncluded = (candidate, order) => new Set([...candidate, ...order]).size === order.length
 
 const createPowerSet = (elements) => {
   const stacks = [[[]], []]
@@ -28,7 +55,6 @@ const orders = ["ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"]
 const course = [2,3,4]
 
 console.log(solution(orders, course))
-console.log(createPowerSet(['A', 'B', 'C', 'D']))
 /*
 1. orders를 모두 모아서 한 번 이상 출현한 문자를 모음
 2. 각 문자를 원소로 가지는 멱집합 구함
