@@ -31,6 +31,7 @@ function solution(orders, course) {
 const isCourseIncluded = (candidate, order) => new Set([...candidate, ...order]).size === order.length
 
 const createPowerSet = (elements) => {
+  console.time('stack')
   const stacks = [[[]], []]
   let index = 0
   let stackIndex = 0
@@ -48,13 +49,46 @@ const createPowerSet = (elements) => {
     }
     stackIndex = nextIndex
   }
-  return stacks.flatMap((e) => e)
+  const r = stacks.flatMap((e) => e)
+  console.timeEnd('stack')
+  return r
 }
+
+function powerSet(elements) {
+  console.time('bitmask') 
+    const result = [];
+    const L = elements.length;
+    const powerSetSize = 1 << L; // 2^L, 가능한 부분 집합의 총 개수
+
+  /* 
+    elements의 i번째 문자가 i번째 비트가 됨.
+    ex. 11(3)이면 BA, 110(6)은 CB.
+    그런데 j 루프를 0부터 순회하므로 BA가 아니라 AB, BC가 배열에 push됨
+  
+  */
+    for (let i = 0; i < powerSetSize; i++) {
+        const subset = [];
+        
+        for (let j = 0; j < L; j++) {
+            if (i & (1 << j)) { // i의 j번째 비트가 1인지 확인
+                subset.push(elements[j]);
+            }
+        }
+        result.push(subset);
+    }
+    console.timeEnd('bitmask')
+    return result;
+}
+
 
 const orders = ["ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"]
 const course = [2,3,4]
 
-console.log(solution(orders, course))
+const arr = Array.from({length: 12}, (_, i) => i+1)
+
+console.log(powerSet(arr))
+console.log(createPowerSet(arr))
+// console.log(solution(orders, course))
 /*
 1. orders를 모두 모아서 한 번 이상 출현한 문자를 모음
 2. 각 문자를 원소로 가지는 멱집합 구함
