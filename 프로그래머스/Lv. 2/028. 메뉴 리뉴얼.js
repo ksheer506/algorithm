@@ -24,14 +24,12 @@ function solution(orders, course) {
       hitCourses.set(L, [...prevCandidates, setMenu])
     }
   }
-
   return [...hitCourses.values()].flatMap((e) => e).sort()
 }
 
 const isCourseIncluded = (candidate, order) => new Set([...candidate, ...order]).size === order.length
 
 const createPowerSet = (elements) => {
-  console.time('stack')
   const stacks = [[[]], []]
   let index = 0
   let stackIndex = 0
@@ -49,13 +47,10 @@ const createPowerSet = (elements) => {
     }
     stackIndex = nextIndex
   }
-  const r = stacks.flatMap((e) => e)
-  console.timeEnd('stack')
-  return r
+  return stacks.flatMap((e) => e)
 }
 
 function powerSet(elements) {
-  console.time('bitmask') 
     const result = [];
     const L = elements.length;
     const powerSetSize = 1 << L; // 2^L, 가능한 부분 집합의 총 개수
@@ -76,7 +71,6 @@ function powerSet(elements) {
         }
         result.push(subset);
     }
-    console.timeEnd('bitmask')
     return result;
 }
 
@@ -84,11 +78,8 @@ function powerSet(elements) {
 const orders = ["ABCFG", "AC", "CDE", "ACDE", "BCFG", "ACDEH"]
 const course = [2,3,4]
 
-const arr = Array.from({length: 12}, (_, i) => i+1)
 
-console.log(powerSet(arr))
-console.log(createPowerSet(arr))
-// console.log(solution(orders, course))
+console.log(solution(orders, course))
 /*
 1. orders를 모두 모아서 한 번 이상 출현한 문자를 모음
 2. 각 문자를 원소로 가지는 멱집합 구함
