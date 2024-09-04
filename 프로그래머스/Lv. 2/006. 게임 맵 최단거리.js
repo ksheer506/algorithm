@@ -1,10 +1,16 @@
+/** 
+ * !! 틀린 풀이 !!
+ * DFS는 첫 경로로 r+1, c 방향으로 계속 나아가는 경로를 "끝까지" 검사하고, ... 등 하나의 경로로 끝까지 탐색하기 때문에 비효율적
+ * 
+ * BFS는 
+ */
 function solution(maps) {
   const R = maps.length - 1;
   const C = maps[0].length - 1;
-  const dst = [R, C];
 
   const dfs = ([r, c], step) => {
     const onMaps = r >= 0 && r <= R && c >= 0 && c <= C;
+    
     // 현재 위치가 맵 바깥이거나 장애물(0) 위일 때 중단
     if (!onMaps || !maps[r][c]) return;
     // 이전에 지났던 경로인데 최단 거리 기록이 있는 경우 중단
@@ -23,50 +29,34 @@ function solution(maps) {
 // 효율성1: call stack overflow
 // 효율성3~4: 시간 초과
 
+const DIRECTIONS = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+
 function solutionW(maps) {
   const R = maps.length - 1;
   const C = maps[0].length - 1;
-  const dst = [R, C];
-  const dir = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+  const queue = [[0, 0, 1]]
+  
+  const isOnMap = (r, c) => r >= 0 && r <= R && c >= 0 && c <= C;
 
-  const onMaps = (a, b) => a >= 0 && a <= R && b >= 0 && b <= C;
-
-  const stack = [[0, 0, 1]];
-
-  while (stack.length) {
-    const [a, b, step] = stack.pop();
-
-    if (maps[a][b] > 1 && maps[a][b] <= step) continue;
-
-    maps[a][b] = step;
+  while (queue.length) {
+    const [a, b, step] = queue.shift();
     
-    const next = [];
-
-    dir.forEach(([x, y]) => {
-      if (onMaps(a + x, b + y) && maps[a + x][b + y]) {
-        next.push([a + x, b + y, step + 1]);
+    // 이미 지났던 길(> 1)은 이전에 해당 위치에서 상하좌우를 큐에 넣었으므로 아래 forEach 연산 필요 x
+    if (maps[a][b] > 1 && maps[a][b] <= step) continue;
+    // 맵의 현재 위치에 원점에서부터 지나 온 거리 기록
+    maps[a][b] = step;
+  
+    DIRECTIONS.forEach(([x, y]) => {
+      if (isOnMap(a + x, b + y) && maps[a + x][b + y]) {
+        queue.push([a + x, b + y, step + 1]);
       }
     })
   }
-
   return maps[R][C] > 1 ? maps[R][C] : -1;
 }
 // 효율성1, 3~4: 시간 초과
 
-/* 
-최상단 → 최하단이므로 최단 경로는
-1. 위, 아래가 모두 가능하면 아래만
-2. 왼쪽, 오른쪽 모두 가능하면 오른쪽만
-3. 위, 오른쪽 모두 가능하면 오른쪽만
-*/
-
-const maps = [
-  [1, 0, 1, 1, 1],
-  [1, 0, 1, 0, 1],
-  [1, 0, 1, 1, 1],
-  [1, 1, 1, 0, 1],
-  [0, 0, 0, 0, 1]
-]
+const maps = [[1,0,1,1,1],[1,0,1,0,1],[1,0,1,1,1],[1,1,1,0,1],[0,0,0,0,1]]
 const maps2 = [
   [1, 0, 1, 1, 1],
   [1, 0, 1, 0, 1],
@@ -75,4 +65,4 @@ const maps2 = [
   [0, 0, 0, 0, 1]
 ]
 
-console.log(solutionW(maps2))
+console.log(solutionW(maps))
