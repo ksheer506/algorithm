@@ -16,7 +16,8 @@ const permutation = (arr, L) => {
   return res
 }
 
-function solution(k, dungeons) {
+/* 1. 순열을 이용한 풀이 */
+function solutionWithPermutation(k, dungeons) {
   const L = dungeons.length
   const cases = permutation(dungeons, L)
   let max = 0
@@ -40,7 +41,34 @@ function solution(k, dungeons) {
   return max
 }
 
+/* 2. DFS를 이용한 풀이 */
+/* 1번 풀이와는 달리 순열을 모두 구한 후에 계산하는 방식이 아니라 더 빠름 */
+function solutionWithDFS(k, dungeons) {
+  const L = dungeons.length
+  let max = 0
+  
+  const dfs = (arr, health) => {
+    const [required, consumption] = arr.at(-1) ?? [0, 0]
+    const canContinue = health >= required
+    const count = arr.length - (canContinue ? 0 : 1)
+    
+    max = Math.max(max, count)
+
+    if (arr.length >= L || max >= L) {
+      return
+    }
+    dungeons.forEach((d, i) => {
+      if (canContinue && !arr.includes(d)) {
+        dfs([...arr, d], health - consumption)
+      }
+    })
+  }
+  dfs([], k)
+  
+  return max
+}
+
 const k = 80
 const dungeons = [[80,20],[50,40],[30,10]]
 
-console.log(solution(k, dungeons))
+console.log(solutionWithDFS(k, dungeons))
