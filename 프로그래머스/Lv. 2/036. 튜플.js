@@ -9,7 +9,7 @@ function solution(s) {
   for (let i = 0; i < tupleSet.length; i++) {
     res.push(...tupleSet[i])
   }
-  return [...new Set(res)]
+  return [...new Set(res)].map((s) => +s)
 }
 
 const s = "{{2},{2,1},{2,1,3},{2,1,3,4}}"
