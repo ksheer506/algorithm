@@ -73,6 +73,8 @@ class MinHeap {
   insert(value) {
     this.#heap.push(value)
     this.#arrangeUp()
+    
+    return this
   }
   
   // 배열의 1번째 요소 추출하고 마지막 요소를 1번째로 삽입 후, 아래쪽으로 재정렬
@@ -96,3 +98,27 @@ class MinHeap {
     return this.#heap.length - 1
   }
 }
+
+function solution(scoville, K) {
+  const heap = scoville.reduce((a, c) => a.insert(c), new MinHeap())
+  let count = 0
+  
+  while (heap.peekMin() < K) {
+    if (heap.size <= 1) {
+      return -1
+    }
+    const min = heap.extractMin()
+    const nextMin = heap.extractMin()
+    const nextScoville = min + nextMin * 2
+    
+    heap.insert(nextScoville)
+    count += 1
+  }
+  
+  return count
+}
+
+const scoville = [1, 2, 3, 9, 10, 12]
+const k = 7
+
+console.log(solution(scoville, k))
