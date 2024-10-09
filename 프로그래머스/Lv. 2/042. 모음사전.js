@@ -1,26 +1,26 @@
 const WORDS = ['A', 'E', 'I', 'O', 'U']
 
-const getAllCases = (arr) => {
+const getAllPermutations = (arr) => {
   const L = arr.length
   const res = []
   
-  const permutation = (a, l) => {
-    if (a.length === l) {
-      res.push(a)
+  const permutation = (a) => {
+    if (a.length > L) {
       return
     }
+    if (a.length >= 1 && a.length <= L) {
+      res.push(a)
+    }
     for (const e of arr) {
-      permutation(`${a}${e}`, l)
+      permutation(`${a}${e}`)
     }
   }
   
-  for (let i = 1; i <= L; i++) {
-    permutation('', i)
-  }
+  permutation('')
   return res
 }
 
-const DICTIONARY = getAllCases(WORDS).sort()
+const DICTIONARY = getAllPermutations(WORDS).sort()
 
 function solution(word) {
   return DICTIONARY.findIndex((e) => e === word) + 1
