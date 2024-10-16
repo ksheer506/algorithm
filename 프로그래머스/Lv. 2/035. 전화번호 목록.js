@@ -17,7 +17,10 @@ function solution(phone_book) {
 - N번째 번호가 첫번째 번호의 접두사가 되는 경우 실패함
 */
 
-/** 정렬을 이용한 방법 */
+/** 
+ * 정렬을 이용한 방법 
+ * 1번 방법에서는 문자열의 길이만큼 문자열을 자르는 연산이 중복되기 때문에 2번 방법보다 비효율적
+ */
 function solution2(phone_book) {
   const sorted = phone_book.sort()
 
@@ -25,7 +28,10 @@ function solution2(phone_book) {
     const prev = sorted.at(i - 1)
     const current = sorted.at(i)
     
-    if (current.includes(prev)) {
+    /**
+     * includes를 사용하면 [119", "97611973"]에서 false로 잘못 반환됨
+     */
+    if (current.startsWith(prev)) {
       return false
     }
   }
