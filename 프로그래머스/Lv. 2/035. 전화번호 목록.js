@@ -13,11 +13,25 @@ function solution(phone_book) {
   }
   return true;
 }
-
 /*
 - N번째 번호가 첫번째 번호의 접두사가 되는 경우 실패함
 */
 
-const phones = ["119", "97674223", "1195524421", "11910", "1193"]
+/** 정렬을 이용한 방법 */
+function solution2(phone_book) {
+  const sorted = phone_book.sort()
 
-console.log(solution(phones))
+  for (let i = 1; i < sorted.length; i++) {
+    const prev = sorted.at(i - 1)
+    const current = sorted.at(i)
+    
+    if (current.includes(prev)) {
+      return false
+    }
+  }
+  return true
+}
+
+const phones = ["0", "119", "97674223", "195524421", "1110", "1199", "01"]
+
+console.log(solution2(phones))
