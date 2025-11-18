@@ -5,9 +5,9 @@ const DIRECTION = [
 function solution(land) {
   const W = land[0].length
   const D = land.length 
-  // 매장지 index(0부터) -> 매장량
+  // 매장지 index -> 매장량
   const deposits = []
-  // 매장지 index에 대한 좌표 Set
+  // 매장지 index -> 좌표 Set
   const groupCoordinates = []
   const depositByColumn = []
   
@@ -43,21 +43,29 @@ function solution(land) {
   }
   
   for (let c = 0; c < W; c++) {
+    // 하나의 매장지가 여러 열에 걸쳐있는 경우, 한번 카운트하면 중복으로 포함되지 않도록 인덱스 관리
+    const countedGroupIndex = new Set()
+    
     for (let r = 0; r < D; r++) {
       const groupIndex = groupCoordinates.findIndex((g) => g.has(`${r},${c}`))
-      
+
       // 석유가 없는 경우 다음 행으로 넘어감
       if (land[r][c] !== 1) {
         continue
       }
-      // FIXME: 동일한 매장지가 여러 열에 걸쳐 있는 경우 카운트되지 않음
       
       // 매장 그룹의 최상단 위치에서만 해당 열의 매장량 기록
       if (groupIndex === -1) {
         const [deposit, visited] = getDeposit(r, c)
   
         groupCoordinates.push(visited)
+        deposits.push(deposit)
         depositByColumn[c] = (depositByColumn[c] ?? 0) + deposit
+        countedGroupIndex.add(deposits.length - 1)
+      // 이전 열에서 확인된 매장지의 매장량 기록
+      } else if (!countedGroupIndex.has(groupIndex)) {
+        depositByColumn[c] = (depositByColumn[c] ?? 0) + deposits[groupIndex]
+        countedGroupIndex.add(groupIndex)
       }
     }
   }
@@ -67,15 +75,17 @@ function solution(land) {
 
 /**
  * (i, 0)가 출발점인 길찾기 문제와 유사함. 하지만 모든 0 <= i < land[0].length에 대해 계산하면 중복 계산이 존재하기 때문에 비효율적
- * -> 탐색한 좌표도 같이 반환해 중복 계산 피함
+ * -> 탐색한 좌표도 같이 반환해 중복 계산
 */
 
 const land = [
-  [0, 0, 0, 1, 1, 1, 0, 0], 
-  [0, 0, 0, 0, 1, 1, 0, 0], 
-  [1, 1, 0, 0, 0, 1, 1, 0], 
-  [1, 1, 1, 0, 0, 0, 0, 0], 
-  [1, 1, 1, 0, 0, 0, 1, 1]
+  [1, 0, 1, 0, 1, 1], 
+  [1, 0, 1, 0, 0, 0], 
+  [1, 0, 1, 0, 0, 1], 
+  [1, 0, 0, 1, 0, 0], 
+  [1, 0, 0, 1, 0, 1], 
+  [1, 0, 0, 0, 0, 0], 
+  [1, 1, 1, 1, 1, 1]
 ]
 
 console.log(solution(land))
