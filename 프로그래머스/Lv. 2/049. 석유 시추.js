@@ -9,7 +9,6 @@ function solution(land) {
   const deposits = []
   // 매장지 index에 대한 좌표 Set
   const groupCoordinates = []
-  let depositIndex = 0
   const depositByColumn = []
   
   const getDeposit = (startR, startC) => {
@@ -44,28 +43,26 @@ function solution(land) {
   }
   
   for (let c = 0; c < W; c++) {
-    let prevGroupIndex = -1
-    
     for (let r = 0; r < D; r++) {
-      const pos = `${r},${c}`
-      const hasOil = land[r][c] === 1
-      const groupIndex = groupCoordinates.findIndex((c) => c.has(pos))
+      const groupIndex = groupCoordinates.findIndex((g) => g.has(`${r},${c}`))
       
-      if (!hasOil) {
+      // 석유가 없는 경우 다음 행으로 넘어감
+      if (land[r][c] !== 1) {
         continue
       }
+      // FIXME: 동일한 매장지가 여러 열에 걸쳐 있는 경우 카운트되지 않음
+      
       // 매장 그룹의 최상단 위치에서만 해당 열의 매장량 기록
       if (groupIndex === -1) {
         const [deposit, visited] = getDeposit(r, c)
-        
-        groupCoordinates[groupIndex] = visited
+  
+        groupCoordinates.push(visited)
         depositByColumn[c] = (depositByColumn[c] ?? 0) + deposit
-        
-        groupIndex += 1
       }
     }
   }
-  return Math.max(...depositByColumn)
+  console.log(depositByColumn)
+  return Math.max(...depositByColumn.filter(Boolean))
 }
 
 /**
