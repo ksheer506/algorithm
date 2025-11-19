@@ -26,6 +26,7 @@ function solution(land) {
       if (!isCandidate(row, col)) {
         continue
       }
+      // TODO: 여기에서 그룹 인덱스와 매장량 기록하면?
       visited.add(`${row},${col}`)
       count += 1
       
@@ -44,15 +45,14 @@ function solution(land) {
   
   for (let c = 0; c < W; c++) {
     // 하나의 매장지가 여러 열에 걸쳐있는 경우, 한번 카운트하면 중복으로 포함되지 않도록 인덱스 관리
-    const countedGroupIndex = new Set()
+    const visitedGroupIndex = new Set()
     
     for (let r = 0; r < D; r++) {
-      const groupIndex = groupCoordinates.findIndex((g) => g.has(`${r},${c}`))
-
       // 석유가 없는 경우 다음 행으로 넘어감
       if (land[r][c] !== 1) {
         continue
       }
+      const groupIndex = groupCoordinates.findIndex((g) => g.has(`${r},${c}`))
       
       // 매장 그룹의 최상단 위치에서만 해당 열의 매장량 기록
       if (groupIndex === -1) {
@@ -61,15 +61,14 @@ function solution(land) {
         groupCoordinates.push(visited)
         deposits.push(deposit)
         depositByColumn[c] = (depositByColumn[c] ?? 0) + deposit
-        countedGroupIndex.add(deposits.length - 1)
+        visitedGroupIndex.add(deposits.length - 1)
       // 이전 열에서 확인된 매장지의 매장량 기록
-      } else if (!countedGroupIndex.has(groupIndex)) {
+      } else if (!visitedGroupIndex.has(groupIndex)) {
         depositByColumn[c] = (depositByColumn[c] ?? 0) + deposits[groupIndex]
-        countedGroupIndex.add(groupIndex)
+        visitedGroupIndex.add(groupIndex)
       }
     }
   }
-  console.log(depositByColumn)
   return Math.max(...depositByColumn.filter(Boolean))
 }
 
