@@ -5,16 +5,16 @@ const DIRECTION = [
 function solution(land) {
   const W = land[0].length
   const D = land.length 
-  // 매장지 index -> 매장량
-  const deposits = []
-  // 매장지 index -> 좌표 Set
-  const groupCoordinates = []
+  // 매장지 인덱스 -> 매장량
+  const depositAmount = []
+  // 각 위치별 "매장지 인덱스"
+  const depositIndex = Array.from({ length: D }, () => Array(W).fill(null))
   const depositByColumn = []
-  
-  const getDeposit = (startR, startC) => {
+
+  const getDeposit = (startR, startC, index) => {
     const visited = new Set()
     const needToVisit = [[startR, startC]]
-    let count = 0
+    let amount = 0
     
     // 매장량이 없거나 land 밖인 경우 탐색 대상에 넣지 않음
     const isCandidate = (r, c) => land[r]?.[c] === 1 && !visited.has(`${r},${c}`)
@@ -26,9 +26,10 @@ function solution(land) {
       if (!isCandidate(row, col)) {
         continue
       }
-      // TODO: 여기에서 그룹 인덱스와 매장량 기록하면?
       visited.add(`${row},${col}`)
-      count += 1
+      amount += 1
+      // 탐색 시 해당 위치에 매장지 index도 같이 표시
+      depositIndex[row][col] = index
       
       for (const [R, C] of DIRECTION) {
         const nextR = row + R
@@ -39,8 +40,7 @@ function solution(land) {
         }
       }
     }
-    // 해당 매장지 그룹의 매장량과 좌표
-    return [count, visited]
+    return amount
   }
   
   for (let c = 0; c < W; c++) {
@@ -52,19 +52,19 @@ function solution(land) {
       if (land[r][c] !== 1) {
         continue
       }
-      const groupIndex = groupCoordinates.findIndex((g) => g.has(`${r},${c}`))
+      const groupIndex = depositIndex[r][c] 
       
-      // 매장 그룹의 최상단 위치에서만 해당 열의 매장량 기록
-      if (groupIndex === -1) {
-        const [deposit, visited] = getDeposit(r, c)
+      // 매장지 인덱스 정보가 없으면 매장지 index 기록
+      if (groupIndex === null) {
+        const currentIndex = depositAmount.length
+        const deposit = getDeposit(r, c, currentIndex)
   
-        groupCoordinates.push(visited)
-        deposits.push(deposit)
+        depositAmount.push(deposit)
         depositByColumn[c] = (depositByColumn[c] ?? 0) + deposit
-        visitedGroupIndex.add(deposits.length - 1)
+        visitedGroupIndex.add(currentIndex)
       // 이전 열에서 확인된 매장지의 매장량 기록
       } else if (!visitedGroupIndex.has(groupIndex)) {
-        depositByColumn[c] = (depositByColumn[c] ?? 0) + deposits[groupIndex]
+        depositByColumn[c] = (depositByColumn[c] ?? 0) + depositAmount[groupIndex]
         visitedGroupIndex.add(groupIndex)
       }
     }
@@ -77,7 +77,15 @@ function solution(land) {
  * -> 탐색한 좌표도 같이 반환해 중복 계산
 */
 
-const land = [
+const land1 = [
+  [0, 0, 0, 1, 1, 1, 0, 0], 
+  [0, 0, 0, 0, 1, 1, 0, 0], 
+  [1, 1, 0, 0, 0, 1, 1, 0], 
+  [1, 1, 1, 0, 0, 0, 0, 0], 
+  [1, 1, 1, 0, 0, 0, 1, 1]
+]
+
+const land2 = [
   [1, 0, 1, 0, 1, 1], 
   [1, 0, 1, 0, 0, 0], 
   [1, 0, 1, 0, 0, 1], 
@@ -87,4 +95,4 @@ const land = [
   [1, 1, 1, 1, 1, 1]
 ]
 
-console.log(solution(land))
+console.log(solution(land1))
