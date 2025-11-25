@@ -74,6 +74,19 @@ function solution(land) {
 /**
  * (i, 0)가 출발점인 길찾기 문제와 유사함. 하지만 모든 0 <= i < land[0].length에 대해 계산하면 중복 계산이 존재하기 때문에 비효율적
  * -> 탐색한 좌표도 같이 반환해 중복 계산
+ * 
+ * [시간 효율성 통과 실패]
+ * @see https://github.com/ksheer506/algorithm/commit/b3242e5a47f7635cff29747f2bac3d3817deb65a
+ * 1. getDeposit에서 (r,c)에 해당하는 매장지 인덱스 기록
+ *  기존에는 for 루프에서 `groupCoordinates.findIndex((g) => g.has(`${r},${c}`))`으로 각 위치별 매장지의 인덱스를 탐색함. 
+ * -> getDeposit에서 매장지를 탐색하면서 (r,c) 위치에 현재 매장지의 인덱스를 같이 기록해 for 루프에서의 비효율 제거
+ * 
+ * @see https://github.com/ksheer506/algorithm/commit/44b0928878f414740ed3a98b569d7a37c54ee06b
+ * 2. getDeposit에서 isCandidate 중복 호출
+ * 기존에는 BFS 탐색 시 while 루프 처음, 다음 탐색 좌표를 push 할 때 `isCandidate`를 불필요하게 두 번 호출
+ * 
+ * 3. depositByColumn 배열 제거
+ * `Math.max(...depositByColumn.filter(Boolean))`으로 각 열의 매장지를 배열에 저장해두고 마지막에 Math.max 처리를 했는데 배열을 제거하고 루프 순회 시 max 값을 매번 갱신하는 것으로 변경
 */
 
 const land1 = [
