@@ -7,35 +7,30 @@ function solution(land) {
   const D = land.length 
   // 매장지 인덱스 -> 매장량
   const depositAmount = []
-  // 각 위치별 "매장지 인덱스"
+  // (row, col) -> 매장지 인덱스
   const depositIndex = Array.from({ length: D }, () => Array(W).fill(null))
-  const depositByColumn = []
 
   const getDeposit = (startR, startC, index) => {
-    const visited = new Set()
     const needToVisit = [[startR, startC]]
     let amount = 0
     
     // 매장량이 없거나 land 밖인 경우 탐색 대상에 넣지 않음
-    const isCandidate = (r, c) => land[r]?.[c] === 1 && !visited.has(`${r},${c}`)
+    const isCandidate = (r, c) => land[r]?.[c] === 1 && depositIndex[r][c] === null
+    
+    depositIndex[startR][startC] = index
     
     while (needToVisit.length > 0) {
       const [row, col] = needToVisit.pop()
-      const hasOil = land[row][col] === 1
       
-      if (!isCandidate(row, col)) {
-        continue
-      }
-      visited.add(`${row},${col}`)
       amount += 1
-      // 탐색 시 해당 위치에 매장지 index도 같이 표시
-      depositIndex[row][col] = index
       
       for (const [R, C] of DIRECTION) {
         const nextR = row + R
         const nextC = col + C
         
         if (isCandidate(nextR, nextC)) {
+          // 탐색 시 해당 위치에 매장지 index도 같이 표시
+          depositIndex[nextR][nextC] = index
           needToVisit.push([nextR, nextC])
         }
       }
@@ -43,9 +38,12 @@ function solution(land) {
     return amount
   }
   
+  let maxAmount = 0
+  
   for (let c = 0; c < W; c++) {
     // 하나의 매장지가 여러 열에 걸쳐있는 경우, 한번 카운트하면 중복으로 포함되지 않도록 인덱스 관리
     const visitedGroupIndex = new Set()
+    let columnTotalAmount = 0
     
     for (let r = 0; r < D; r++) {
       // 석유가 없는 경우 다음 행으로 넘어감
@@ -60,16 +58,17 @@ function solution(land) {
         const deposit = getDeposit(r, c, currentIndex)
   
         depositAmount.push(deposit)
-        depositByColumn[c] = (depositByColumn[c] ?? 0) + deposit
+        columnTotalAmount += deposit
         visitedGroupIndex.add(currentIndex)
       // 이전 열에서 확인된 매장지의 매장량 기록
       } else if (!visitedGroupIndex.has(groupIndex)) {
-        depositByColumn[c] = (depositByColumn[c] ?? 0) + depositAmount[groupIndex]
+        columnTotalAmount += depositAmount[groupIndex]
         visitedGroupIndex.add(groupIndex)
       }
     }
+    maxAmount = Math.max(maxAmount, columnTotalAmount)
   }
-  return Math.max(...depositByColumn.filter(Boolean))
+  return maxAmount
 }
 
 /**
