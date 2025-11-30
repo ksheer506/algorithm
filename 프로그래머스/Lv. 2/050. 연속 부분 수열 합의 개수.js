@@ -10,7 +10,6 @@ function solution(elements) {
         previousSum[i] += elements[(i + (n - 1)) % L]
         sums.add(previousSum[i])
     }
-    console.log(n, previousSum)
   }
   return sums.size;
 }
