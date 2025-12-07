@@ -57,6 +57,6 @@ function gcd(a, b) {
 
 const arr = [1,2,3]
 
-console.log(solution(arr))
+console.log(solution2(arr))
 
 console.log(gcd(4,18)) // 2 2, 2 3 3
