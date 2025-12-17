@@ -12,13 +12,14 @@
  * 1. 원본 배열에서 원소를 하나씩 꺼내 배열 생성 
  * [1] [2] [3] ...
  * 
- * 2. 순서가 존재하지 않으므로 [1,2,3]와 [1,3,2]는 중복 케이스이다. 즉, 원소의 마지막에 담긴 값의 인덱스가 `index`일 때 다음 재귀 depth에서는 `index + 1`인 원소부터 담아야 한다.
- * 단계 1에서 만든 각 원소들에 대해 cursor+1 ~ N-1까지의 값을 덧붙인다.
+ * 2. 순서가 존재하지 않으므로 [1,2,3]와 [1,3,2]는 중복 케이스이다. 즉, 원소의 마지막에 담긴 값의 인덱스가 `index`일 때 다음 재귀 depth에서는 `index+1`인 원소부터 담아야 한다.
+ * 단계 1에서 만든 각 원소들에 대해 index+1 ~ N-1까지의 값을 덧붙인다.
+ * `index`를 "마지막에 담긴 값이 원본 배열에서 인덱스가 어떻게 되는가"로 직접 구할 수도 있지만, 재귀 이전/다음 depth 사이에 전달(통신)되어야 하는 값이므로 함수의 argument로 넘기는 방식이 좋다.
  * [1,2] [1,3] [1,4] ...
  * [2,3] [2,4] [2,5] ...
  * [3,4] [3,5] [3,6] ...
  * 
- * 3. 단계 2에서 만든 각 원소들에 대해 cursor+1 ~ N-1까지의 값을 덧붙인다. 
+ * 3. 단계 2에서 만든 각 원소들에 대해 index+1 ~ N-1까지의 값을 덧붙인다. 
  * [1,2,3] [1,2,4] [1,2,5] ...
  * [1,3,4] [1,3,5] [1,3,6] ...
  * [1,4,5] [1,4,6] [1,4,7] ...
@@ -29,22 +30,26 @@
  * 
  */
 function combination(arr, R) {
- const res = []
- 
- const fn = (data, cursor = 0) => {
-  if (data.length === R) {
-   res.push(data)
-   return
+  const res = []
+  
+  const fn = (data, cursor = 0) => {
+    if (data.length === R) {
+      res.push(data)
+      return
+    }
+    for (let i = cursor; i < arr.length; i++) {
+      fn([...data, arr[i]], i + 1)
+    }
   }
-  for (let i = cursor; i < arr.length; i++) {
-   fn([...data, arr[i]], i + 1)
-  }
- }
- fn([])
- 
- return res
+  fn([])
+  
+  return res
 }
 
-
-
 /* ----------------- 순열 ----------------- */
+
+
+const arr = [1,2,3,4,5,6,7]
+const R = 3
+
+console.log(JSON.stringify(combination(arr, R)))

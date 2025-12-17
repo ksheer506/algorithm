@@ -12,11 +12,11 @@ function powerSet1(arr) {
 
 /**
  * 2. 재귀를 이용한 방법
- * 방법 1의 규칙이 재귀의 형태를 띄므로 재귀를 이용해 멱집합을 구할 수 있다.
+ * 방법 1의 규칙이 재귀의 형태를 띄므로 재귀를 이용해 멱집합을 구할 수 있다.(방법 1의 역순)
  * P1 = [1] -> [[], [1]]
  * P2 = [1,2] -> [...P1, [2], [1,2]]
  * P3 = [1,2,3] -> [...P2, [3], [1,3], [2,3], [1,2,3]]
- * 방법 1과 달리 크기 n인 집합 -> 크기 0인 집합 역순으로 진행하는 것이 코드를 짜기 편하다.
+ * 이전 집합(이번에 선택한 원소 `last`가 포함되지 않은 멱집합) + 이번에 선택한 원소 `last`가 포함된 멱집합
 */
 function powerSet2(arr) {
   /** 재귀 종료 조건 */
@@ -25,7 +25,7 @@ function powerSet2(arr) {
   }
   const rest = arr.slice(0, arr.length - 1)
   const last = arr.at(-1)
-  const powerSetWithoutLast = powerSet3(rest)
+  const powerSetWithoutLast = powerSet2(rest)
   
   return [
     ...powerSetWithoutLast,
