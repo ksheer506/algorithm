@@ -1,18 +1,17 @@
 function solution(land) {
   const R = land.length
-  const C = 4
-  const landMax = []
+  const landMax = [land[0]]
   
-  for (let i = 0; i < R; i++) {
-    
+  for (let i = 1; i < R; i++) {
+    landMax[i] = getLandMaxScore(landMax[i - 1], land[i])
   }
-  return
+  return Math.max(...landMax[R - 1])
 }
 
 const getLandMaxScore = (prevRow, currentRow) => {
-  let max = []
+  const max = []
   
-  for (let k = 0; k < C; k++) {
+  for (let k = 0; k < currentRow.length; k++) {
     max[k] = currentRow[k] + Math.max(
       ...prevRow.slice(0, k),
       ...prevRow.slice(k + 1),
@@ -67,3 +66,4 @@ const land = [
 ] // 16
 
 console.log(solution(land))
+console.log(solutionFail(land))
