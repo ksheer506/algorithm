@@ -32,7 +32,6 @@ function solution(storey) {
  */
 
 function solutionDFS(storey) {
-  const L = `${storey}`.length
   let minCount = storey
   
   const getNthDigit = (n, digit) => {
@@ -46,15 +45,14 @@ function solutionDFS(storey) {
    * @param count 이동 횟수
    */
   const dfs = (current, digit, count = 0) => {
-    console.log({current, digit, count})
     if (current <= 0 || count > minCount) {
       minCount = Math.min(count, minCount)
       return
     }
     const n = getNthDigit(current, digit)
 
-    dfs(current - n * (10 ** (digit - 1)), digit + 1, count + n)
-    dfs(current + (10 - n) * (10 ** (digit - 1)), digit + 1, count + (10 - n))
+    dfs(current - n * (10 ** (digit - 1)), digit + 1, count + n) // 아래로
+    dfs(current + (10 - n) * (10 ** (digit - 1)), digit + 1, count + (10 - n)) // 위로
   }
   dfs(storey, 1)
 
@@ -64,7 +62,7 @@ function solutionDFS(storey) {
 /**
  * DFS를 이용한 방법
  * N번째 자리에서 위로 갈지, 아래로 갈지 탐색. 
- * 첫번째 풀이와는 달리 위/아래 방향을 결정하지 않고 모두 탐색하기 때문에 효율성 면에서는 떨어짐
+ * 첫번째 풀이와는 달리 위/아래 방향 어느쪽이 더 효율적일지 고려하지 않고 모두 탐색하기 때문에 효율성 면에서는 떨어짐
  * 
  * ex. 1365
  * 1. 1번째 자리(5)에 대해 아래로 가거나(1365 - 5), 위로 가거나(1365 + (10-5))
