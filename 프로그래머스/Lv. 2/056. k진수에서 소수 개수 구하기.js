@@ -13,7 +13,7 @@ const isPrime = (n) => {
   if (resolvedPrimes.has(n)) {
     return true
   }
-  for (let m = 2; m < n; m++) {
+  for (let m = 2; m <= Math.sqrt(n); m++) {
     if (n % m === 0) {
       return false
     }
