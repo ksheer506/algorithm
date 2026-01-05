@@ -1,29 +1,23 @@
-
 function solution(numbers) {
-  const indexStack = [0]
-  const valueStack = [numbers[0]]
+  const stack = [0]
   const res = []
   let cursor = 1
 
   while (cursor < numbers.length) {
     const current = numbers[cursor]
-    const top = valueStack[valueStack.length - 1]
+    const top = numbers[stack[stack.length - 1]]
 
     if (current > top) {
-      const index = indexStack.pop()
-
-      res[index] = current
-      valueStack.pop()
+      res[stack.pop()] = current
       continue
     }
-    indexStack.push(cursor)
-    valueStack.push(current)
+    stack.push(cursor)
     cursor++
   }
 
   /* 다음 큰 수를 찾지 못한 수의 index에 -1 삽입 */
-  for (let i = 0; i < valueStack.length; i++) {
-    res[indexStack[i]] = -1
+  for (let i = 0; i < stack.length; i++) {
+    res[stack[i]] = -1
   }
   return res
 }
