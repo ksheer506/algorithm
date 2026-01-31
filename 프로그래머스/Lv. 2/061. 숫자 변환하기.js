@@ -6,29 +6,28 @@ function solution(x, y, n) {
 
   const OPERATIONS = [(a) => a + n, (a) => a * 2, (a) => a * 3];
 
-  while (queue.length > 0) {
-    const current = queue[head];
+  while (head < queue.length) {
+    const current = queue[head++];
 
-    if (current.n > y) {
-      break;
-    }
     if (current.n === y) {
       answer = current;
       break;
     }
-    if (visited.has(current.n)) {
+    // 1. 이미 방문한 숫자는 이후 연산의 결과값이 동일해지기 때문에 더이상 큐에 넣지 않음
+    // 2. y보다 커지는 경우도 이후 연산을 진행할 이유가 없음
+    if (visited.has(current.n) || current.n > y) {
       continue;
     }
+    visited.add(current.n);
 
     for (op of OPERATIONS) {
-      const next = op(current.n);
-
-      queue.push({ n: next, count: current.count + 1 });
-      visited.add(next);
+      queue.push({ 
+        n: op(current.n), 
+        count: current.count + 1 
+      });
     }
-    head += 1;
   }
-  return answer?.n ?? -1;
+  return answer?.count ?? -1;
 }
 
 function solutionFail(x, y, n) {
@@ -64,8 +63,8 @@ function solutionFail(x, y, n) {
  * -> 최소 연산 횟수(최단 거리) 문제이므로 DFS가 아니라 BFS를 사용해야 함. DFS에서는 한 경로가 최대 횟수라 하더라도 끝까지 진행할 수밖에 없음.
  */
 
-const x = 10;
-const y = 40;
-const n = 5;
+const x = 2;
+const y = 5;
+const n = 4;
 
 console.log(solution(x, y, n)); // 2
