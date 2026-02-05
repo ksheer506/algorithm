@@ -9,12 +9,15 @@ function solution(x, y, n) {
   while (head < queue.length) {
     const current = queue[head++];
 
+    /* BFS에서 조건을 만족하는 최단 거리는 큐의 앞부분에 존재하기 때문에 최소인지 판단할 필요 없이 break 할 수 있음 */
     if (current.n === y) {
       answer = current;
       break;
     }
-    // 1. 이미 방문한 숫자는 이후 연산의 결과값이 동일해지기 때문에 더이상 큐에 넣지 않음
-    // 2. y보다 커지는 경우도 이후 연산을 진행할 이유가 없음
+    /** 
+     * 1. 이미 방문한 숫자는 이후 연산의 결과값이 동일해지기 때문에 더이상 큐에 넣지 않음
+     * 2. y보다 커지는 경우에도 이후 연산을 진행할 이유가 없음
+     * */ 
     if (visited.has(current.n) || current.n > y) {
       continue;
     }
